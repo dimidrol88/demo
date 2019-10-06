@@ -1,0 +1,34 @@
+version: '3'
+services:
+    nginx:
+        build:
+            context: ./docker/development
+            dockerfile: nginx.docker
+        volumes:
+             - ./:/app
+        depends_on:
+            - php-fpm
+        ports:
+            - "8080:80"
+    php-fpm:
+        build:
+            context: ./docker/development
+            dockerfile: php-fpm.docker
+        volumes:
+            - ./:/app
+        depends_on:
+            - mailer
+    php-cli:
+        build:
+            context: ./docker/development
+            dockerfile: php-cli.docker
+        volumes:
+            - ./:/app
+            - composer:/root/.composer/cache
+    mailer:
+        image: mailhog/mailhog
+        ports:
+            - "8088:8025"
+            
+volumes:
+    composer:
